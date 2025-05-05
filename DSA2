@@ -1,0 +1,81 @@
+// studentinformation
+
+
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct Student {
+    int roll;
+    string name, div, addr;
+};
+
+vector<Student> students;
+
+void loadData() {
+    ifstream file("students.dat");
+    Student s;
+    while(file >> s.roll >> ws && getline(file, s.name) && getline(file, s.div) && getline(file, s.addr))
+        students.push_back(s);
+}
+
+void saveData() {
+    ofstream file("students.dat");
+    for(auto &s : students)
+        file << s.roll << '\n' << s.name << '\n' << s.div << '\n' << s.addr << '\n';
+}
+
+void addStudent() {
+    Student s;
+    cout << "Roll: "; cin >> s.roll;
+    cout << "Name: "; cin >> ws; getline(cin, s.name);
+    cout << "Division: "; getline(cin, s.div);
+    cout << "Address: "; getline(cin, s.addr);
+    students.push_back(s);
+    saveData();
+    cout << "Student added!\n";
+}
+
+void displayStudent() {
+    int roll; cout << "Enter roll: "; cin >> roll;
+    auto it = find_if(students.begin(), students.end(), [roll](const Student &s){ return s.roll == roll; });
+    if(it != students.end())
+        cout << "Roll: " << it->roll << "\nName: " << it->name << "\nDivision: " << it->div << "\nAddress: " << it->addr << "\n";
+    else
+        cout << "Student not found!\n";
+}
+
+void deleteStudent() {
+    int roll; cout << "Enter roll: "; cin >> roll;
+    auto it = remove_if(students.begin(), students.end(), [roll](const Student &s){ return s.roll == roll; });
+    if(it != students.end()) {
+        students.erase(it, students.end());
+        saveData();
+        cout << "Student deleted!\n";
+    } else {
+        cout << "Student not found!\n";
+    }
+}
+
+void displayAll() {
+    for(auto &s : students)
+        cout << "Roll: " << s.roll << "\nName: " << s.name << "\nDivision: " << s.div << "\nAddress: " << s.addr << "\n\n";
+}
+
+int main() {
+    loadData();
+    while(true) {
+        cout << "\n1. Add\n2. Display\n3. Delete\n4. Display All\n5. Exit\nChoice: ";
+        int choice; cin >> choice;
+        switch(choice) {
+            case 1: addStudent(); break;
+            case 2: displayStudent(); break;
+            case 3: deleteStudent(); break;
+            case 4: displayAll(); break;
+            case 5: return 0;
+            default: cout << "Invalid choice!\n";
+        }
+    }
+}
