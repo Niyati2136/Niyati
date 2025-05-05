@@ -1,0 +1,129 @@
+//telephonebook probing
+
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class TelephoneBook {
+public:
+    string name;
+    int tel_no;
+    TelephoneBook(string n, int t) : name(n), tel_no(t) {}
+};
+
+const int TABLE_SIZE = 10;
+
+// Insert record using selected probing method
+void insertRecord(vector<TelephoneBook*>& table, bool useQuadratic) {
+    int num;
+    cout << "\nEnter number of records: ";
+    cin >> num;
+
+    for (int i = 0; i < num; ++i) {
+        string name;
+        int tel;
+        cout << "Enter name: ";
+        cin >> name;
+        cout << "Enter telephone no.: ";
+        cin >> tel;
+
+        int baseHash = tel % TABLE_SIZE;
+        bool inserted = false;
+
+        for (int j = 0; j < TABLE_SIZE; ++j) {
+            int index = useQuadratic ? (baseHash + j * j) % TABLE_SIZE
+                                     : (baseHash + j) % TABLE_SIZE;
+
+            if (table[index] == nullptr) {
+                table[index] = new TelephoneBook(name, tel);
+                inserted = true;
+                break;
+            }
+        }
+
+        if (!inserted) {
+            cout << "Hash table is full or cannot resolve collision for " << name << ".\n";
+        }
+    }
+}
+
+// Display the entire hash table
+void displayTable(const vector<TelephoneBook*>& table) {
+    cout << "\n-------------------------------\n";
+    cout << "Index\tName\tTelephone No.\n";
+    cout << "-------------------------------\n";
+    for (int i = 0; i < TABLE_SIZE; ++i) {
+        if (table[i])
+            cout << i << "\t" << table[i]->name << "\t" << table[i]->tel_no << "\n";
+        else
+            cout << i << "\t-\t-\n";
+    }
+    cout << "-------------------------------\n";
+}
+
+// Search for a record by name
+void searchRecord(const vector<TelephoneBook*>& table) {
+    string name;
+    cout << "Enter name to search: ";
+    cin >> name;
+    bool found = false;
+
+    for (int i = 0; i < TABLE_SIZE; ++i) {
+        if (table[i] && table[i]->name == name) {
+            cout << "\nFound at index " << i << ":\n";
+            cout << "Name: " << table[i]->name << ", Telephone No.: " << table[i]->tel_no << "\n";
+            found = true;
+            break;
+        }
+    }
+
+    if (!found)
+        cout << "Record not found.\n";
+}
+
+int main() {
+    vector<TelephoneBook*> hashTable(TABLE_SIZE, nullptr);
+    int choice;
+
+    do {
+        cout << "\n--------- Telephone Book ---------\n";
+        cout << "1. Insert Record\n";
+        cout << "2. Display Table\n";
+        cout << "3. Search Record\n";
+        cout << "4. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                int method;
+                cout << "Choose Collision Resolution Method:\n";
+                cout << "1. Quadratic Probing\n";
+                cout << "2. Linear Probing\n";
+                cout << "Enter choice: ";
+                cin >> method;
+                insertRecord(hashTable, method == 1);
+                break;
+            }
+            case 2:
+                displayTable(hashTable);
+                break;
+            case 3:
+                searchRecord(hashTable);
+                break;
+            case 4:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice. Try again.\n";
+        }
+    } while (choice != 4);
+
+    // Clean up allocated memory
+    for (auto entry : hashTable) {
+        delete entry;
+    }
+
+    return 0;
+}
