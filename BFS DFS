@@ -1,0 +1,105 @@
+#include<iostream>
+using namespace std;
+
+void bfs(int arr[6][6], int n) {
+    int vis[n];
+    int que[2 * n];
+    int fr = 0, re = 0;
+    for (int i = 0; i < n; i++) {
+        vis[i] = 0;
+    }
+    que[re] = 0;  // Start from node 1 (0-indexed node 0)
+    vis[0] = 1;
+    re++;
+
+    while (fr != re) {
+        int node = que[fr];  // Get the current node from queue
+        fr++;
+        cout << node + 1 << " ";  // Output node number (1-indexed)
+
+        for (int i = 0; i < n; i++) {
+            if (arr[node][i] == 1 && vis[i] == 0) {
+                que[re] = i;
+                re++;
+                vis[i] = 1;
+            }
+        }
+    }
+    cout << endl;
+}
+
+void dfs(int gr[6][6], int n) {
+    int vis[n];
+    int st[2 * n];
+    int top = -1;  // Top of the stack (initialized to -1)
+    for (int i = 0; i < n; i++) {
+        vis[i] = 0;
+    }
+    st[++top] = 0;  // Push the start node (0-indexed node 0)
+
+    while (top != -1) {
+        int node = st[top];
+        top--;
+        if (vis[node] == 0) {
+            cout << node + 1 << " ";  // Output node number (1-indexed)
+            vis[node] = 1;
+            // Push unvisited adjacent nodes to the stack
+            for (int i = n - 1; i >= 0; i--) {  // Reverse to maintain order like recursion
+                if (gr[node][i] == 1 && vis[i] == 0) {
+                    st[++top] = i;
+                }
+            }
+        }
+    }
+    cout << endl;
+}
+
+int main() {
+    int gr[6][6] = {
+        {1, 1, 1, 0, 0, 0},
+        {0, 0, 0, 1, 1, 1},
+        {1, 0, 1, 0, 1, 0},
+        {0, 1, 0, 1, 0, 1},
+        {1, 1, 0, 1, 0, 0},
+        {0, 0, 1, 0, 1, 1},
+    };
+    int ch;
+    do {
+        // Displaying the graph in a more organized way
+        cout << "The Graph is:" << endl;
+        cout << "\t";
+        for (int i = 0; i < 6; i++) {
+            cout << i + 1 << "\t";  // Print node labels (1 to 6)
+        }
+        cout << endl;
+        // Display adjacency matrix
+        for (int i = 0; i < 6; i++) {
+            cout << i + 1 << "\t";  // Row label (1 to 6)
+            for (int j = 0; j < 6; j++) {
+                cout << gr[i][j] << "\t";  // Adjacency matrix value
+            }
+            cout << endl;
+        }
+        // Menu for BFS or DFS
+        cout << "1. BFS Traversal of Graph" << endl;
+        cout << "2. DFS Traversal of Graph" << endl;
+        cout << "Enter your choice: ";
+        cin >> ch;
+        cout << endl;
+        // Performing BFS or DFS based on user's choice
+        switch (ch) {
+            case 1:
+                cout << "BFS Traversal of Graph is: ";
+                bfs(gr, 6);
+                break;
+            case 2:
+                cout << "DFS Traversal of Graph is: ";
+                dfs(gr, 6);
+                break;
+            default:
+                cout << "Invalid choice! Please enter 1 or 2." << endl;
+        }
+    } while (ch == 1 || ch == 2);  // Keep looping until a valid choice is made
+
+    return 0;
+}
