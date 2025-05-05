@@ -1,0 +1,136 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+#define MAX 10
+
+struct employee {
+    string name;
+    long int employee_id;
+    string designation;
+    int salary;
+};
+
+int num = -1;
+employee emp[MAX];
+
+void insert() {
+    if (num < MAX - 1) {
+        num++;
+        cout << "\nEnter the information of the Employee" << endl;
+        cout << "Employee ID: ";
+        cin >> emp[num].employee_id;
+        cout << "Name: ";
+        cin >> emp[num].name;
+        cout << "Designation: ";
+        cin >> emp[num].designation;
+        cout << "Salary: ";
+        cin >> emp[num].salary;
+    } else {
+        cout << "Employee Table Full\n";
+    }
+}
+
+void deleteIndex(int i) {
+    for (int j = i; j < num; j++) {
+        emp[j] = emp[j + 1];
+    }
+}
+
+void deleteRecord() {
+    if (num == -1) {
+        cout << "No records to delete!" << endl;
+        return;
+    }
+
+    int employee_id;
+    cout << "\nEnter the Employee ID to Delete Record: ";
+    cin >> employee_id;
+
+    for (int i = 0; i <= num; i++) {
+        if (emp[i].employee_id == employee_id) {
+            deleteIndex(i);
+            num--;
+            cout << "Record Deleted!" << endl;
+            return;
+        }
+    }
+    cout << "Employee record not found.\n";
+}
+
+void displayAllRecords() {
+    if (num == -1) {
+        cout << "\nNo records present!" << endl;
+        return;
+    }
+
+    cout << endl << setw(5) << "ID" << setw(15) << "NAME" << setw(20)
+         << "DESIGNATION" << setw(10) << "SALARY" << endl;
+
+    for (int i = 0; i <= num; i++) {
+        cout << setw(5) << emp[i].employee_id
+             << setw(15) << emp[i].name
+             << setw(20) << emp[i].designation
+             << setw(10) << emp[i].salary << endl;
+    }
+}
+
+void searchRecord() {
+    if (num == -1) {
+        cout << "No records to search!" << endl;
+        return;
+    }
+
+    int employee_id;
+    cout << "\nEnter the Employee ID to Search Record: ";
+    cin >> employee_id;
+
+    for (int i = 0; i <= num; i++) {
+        if (emp[i].employee_id == employee_id) {
+            cout << endl << setw(5) << "ID" << setw(15) << "NAME"
+                 << setw(20) << "DESIGNATION" << setw(10) << "SALARY" << endl;
+            cout << setw(5) << emp[i].employee_id
+                 << setw(15) << emp[i].name
+                 << setw(20) << emp[i].designation
+                 << setw(10) << emp[i].salary << endl;
+            return;
+        }
+    }
+    cout << "Employee record not found.\n";
+}
+
+int main() {
+    int option = 0;
+    while (option != 5) {
+        cout << "\n----- Employee Management System -----\n";
+        cout << "1. Insert New Record\n";
+        cout << "2. Display All Records\n";
+        cout << "3. Delete Record\n";
+        cout << "4. Search Record by Employee ID\n";
+        cout << "5. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> option;
+
+        switch (option) {
+            case 1:
+                insert();
+                break;
+            case 2:
+                displayAllRecords();
+                break;
+            case 3:
+                deleteRecord();
+                break;
+            case 4:
+                searchRecord();
+                break;
+            case 5:
+                cout << "\n*** You have exited ***\n";
+                break;
+            default:
+                cout << "Enter a valid option!\n";
+                break;
+        }
+    }
+    return 0;
+}
