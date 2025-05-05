@@ -1,0 +1,96 @@
+// flightpath
+
+#include <iostream>
+#include <stdlib.h>
+#include <string.h>
+using namespace std;
+
+class adjmatlist {
+    int m[20][20], n, i, j;  
+    char ch;  
+    string v[20]; 
+
+public:
+    adjmatlist() {
+        for (i = 0; i < 20; i++) {
+            for (j = 0; j < 20; j++) {
+                m[i][j] = 0;  
+            }
+        }
+    }
+
+    void getgraph();  
+    void displaym();  
+};
+
+void adjmatlist::getgraph() {
+    cout << "\nEnter the number of cities (max. 10): ";
+    cin >> n;
+
+    cout << "\nEnter the names of cities:\n";
+    cin.ignore();  
+    for (i = 0; i < n; i++) {
+        cout << "City " << (i + 1) << ": ";
+        getline(cin, v[i]);  
+    }
+
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            if (i != j) { 
+                cout << "\nIs there a flight between city " << v[i] << " and city " << v[j] << " (y/n)? ";
+                cin >> ch;
+                if (ch == 'y') {
+                    cout << "Enter the time (in hour) to reach city " << v[j] << " from city " << v[i] << ": ";
+                    cin >> m[i][j];  
+                } else {
+                    m[i][j] = 0;  
+                }
+            }
+        }
+    }
+}
+
+void adjmatlist::displaym() {
+    cout << "\nAdjacency Matrix:\n";
+
+    for (j = 0; j < n; j++) {
+        cout << "\t" << v[j];
+    }
+    cout << endl;
+
+    for (i = 0; i < n; i++) {
+        cout << v[i];  
+        for (j = 0; j < n; j++) {
+            cout << "\t" << m[i][j];  
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    int m;   
+    adjmatlist a;
+
+    while (1) {
+        cout << "\n1. Enter graph data:";
+        cout << "\n2. Display adjacency matrix for cities:";
+        cout << "\n3. Exit";
+        cout << "\n\nEnter your choice: ";
+        cin >> m;
+
+        switch (m) {
+            case 1: 
+                a.getgraph();
+                break;
+            case 2: 
+                a.displaym();
+                break;
+            case 3: 
+                exit(0);
+            default:  
+                cout << "\nUnknown choice, please try again.";
+        }
+    }
+
+    return 0;
+}
