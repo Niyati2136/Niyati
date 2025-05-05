@@ -1,0 +1,182 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int key;
+    Node* leftNode;
+    Node* rightNode;
+};
+
+class Tree {
+public:
+    Node* root;
+
+    Tree() {
+        root = nullptr;
+    }
+
+    Node* create(int key) {
+        root = new Node();
+        root->key = key;
+        root->leftNode = nullptr;
+        root->rightNode = nullptr;
+        cout << "Root Node Created: " << key << endl;
+        return root;
+    }
+
+    void insert(Node* root, int key) {
+        Node* node = new Node();
+        node->key = key;
+        node->leftNode = nullptr;
+        node->rightNode = nullptr;
+
+        if (key < root->key) {
+            if (root->leftNode == nullptr) {
+                root->leftNode = node;
+                cout << "Node Inserted to the Left: " << key << endl;
+            } else {
+                insert(root->leftNode, key);
+            }
+        } else if (key > root->key) {
+            if (root->rightNode == nullptr) {
+                root->rightNode = node;
+                cout << "Node Inserted to the Right: " << key << endl;
+            } else {
+                insert(root->rightNode, key);
+            }
+        } else {
+            cout << "Duplicate value not inserted: " << key << endl;
+            delete node;
+        }
+    }
+
+    void inorder(Node* root) {
+        if (root != nullptr) {
+            inorder(root->leftNode);
+            cout << root->key << " ";
+            inorder(root->rightNode);
+        }
+    }
+
+    bool search(Node* root, int k) {
+        if (root == nullptr) return false;
+
+        if (k < root->key) {
+            return search(root->leftNode, k);
+        } else if (k > root->key) {
+            return search(root->rightNode, k);
+        } else {
+            return true;
+        }
+    }
+
+    void MinValue(Node* root) {
+        if (root == nullptr) {
+            cout << "Tree is empty!" << endl;
+            return;
+        }
+        while (root->leftNode != nullptr) {
+            root = root->leftNode;
+        }
+        cout << "Minimum Value: " << root->key << endl;
+    }
+
+    int longestpath(Node* root) {
+        if (root == nullptr) return 0;
+        int Lctr = longestpath(root->leftNode);
+        int Rctr = longestpath(root->rightNode);
+        return (Lctr > Rctr) ? (Lctr + 1) : (Rctr + 1);
+    }
+
+    void swapNodes(Node* root) {
+        if (root == nullptr) return;
+        Node* temp = root->leftNode;
+        root->leftNode = root->rightNode;
+        root->rightNode = temp;
+        swapNodes(root->leftNode);
+        swapNodes(root->rightNode);
+    }
+};
+
+int main() {
+    Tree obj;
+    Node* root = nullptr;
+    int ch;
+
+    do {
+        cout << "\n----------- Binary Tree Operations -----------" << endl;
+        cout << "1. Create Root Node" << endl;
+        cout << "2. Insert New Node" << endl;
+        cout << "3. Minimum Data Value in BST" << endl;
+        cout << "4. Search a Node" << endl;
+        cout << "5. Display the Inorder" << endl;
+        cout << "6. Longest Path in Tree" << endl;
+        cout << "7. Swap Nodes" << endl;
+        cout << "8. Exit" << endl;
+        cout << "Enter your Choice: ";
+        cin >> ch;
+
+        switch (ch) {
+            case 1: {
+                int n;
+                cout << "Enter data for Root Node: ";
+                cin >> n;
+                root = obj.create(n);
+                break;
+            }
+            case 2: {
+                if (root == nullptr) {
+                    cout << "Please create a root node first!" << endl;
+                    break;
+                }
+                int x, k;
+                cout << "How many Nodes do you want to insert: ";
+                cin >> k;
+                for (int i = 0; i < k; i++) {
+                    cout << "Enter data for New Node: ";
+                    cin >> x;
+                    obj.insert(root, x);
+                }
+                break;
+            }
+            case 3:
+                obj.MinValue(root);
+                break;
+            case 4: {
+                int b;
+                cout << "Enter the element to be searched: ";
+                cin >> b;
+                if (obj.search(root, b)) {
+                    cout << "Element is Present" << endl;
+                } else {
+                    cout << "Element is not Present" << endl;
+                }
+                break;
+            }
+            case 5:
+                cout << "Inorder Traversal: ";
+                obj.inorder(root);
+                cout << endl;
+                break;
+            case 6: {
+                int f = obj.longestpath(root);
+                cout << "Longest Path: " << f << endl;
+                break;
+            }
+            case 7:
+                obj.swapNodes(root);
+                cout << "Swapped Tree Inorder Traversal: ";
+                obj.inorder(root);
+                cout << endl;
+                break;
+            case 8:
+                cout << "Exiting..." << endl;
+                break;
+            default:
+                cout << "Invalid Choice!" << endl;
+        }
+    } while (ch != 8);
+
+    return 0;
+}
